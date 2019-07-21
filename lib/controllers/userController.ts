@@ -45,7 +45,6 @@ export const getAlluser = (req: Request, res: Response) => {
 }
 
 export const postSignup = (req: Request, res: Response, next: NextFunction) => {
-  console.log(1)
   check("phone", "phone is not valid").isMobilePhone('zh-CN');
   check("password", "Password must be at least 8 characters long").isLength({ min: 8 });
   check("confirmPassword", "Passwords do not match").equals(req.body.password);
