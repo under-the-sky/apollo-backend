@@ -44,10 +44,10 @@ export const getAlluser = (req: Request, res: Response) => {
   });
 }
 
-export const postSignup = (req: Request, res: Response, next: NextFunction) => {
-  check("phone", "phone is not valid").isMobilePhone('zh-CN');
-  check("password", "Password must be at least 8 characters long").isLength({ min: 8 });
-  check("confirmPassword", "Passwords do not match").equals(req.body.password);
+export const postSignup = async (req: Request, res: Response, next: NextFunction) => {
+  await check("phone", "phone is not valid").isMobilePhone('zh-CN').run(req);
+  await check("password", "Password must be at least 8 characters long").isLength({ min: 8 }).run(req);
+  // check("confirmPassword", "Passwords do not match").equals(req.body.password);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
