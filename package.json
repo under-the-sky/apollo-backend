@@ -1,15 +1,15 @@
 {
-  "name": "apis-project",
+  "name": "backend-apollo",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
     "build": "tsc",
     "dev": "nodemon ./lib/server.ts --exec ts-node",
     "start": "nodemon ./dist/server.js",
     "prod": "npm run build && npm run start"
   },
-  "author": "",
+  "author": "Chen Taoyu",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
