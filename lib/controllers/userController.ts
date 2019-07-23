@@ -43,40 +43,55 @@ export const getAlluser = (req: Request, res: Response) => {
     });
   });
 }
-
-export const postSignup = async (req: Request, res: Response, next: NextFunction) => {
+/**
+ * @typedef Singup
+ * @property {string} phone
+ * @property {string} password - Some description for point - eg: 1234
+ * @property {string} nickname
+ */
+/**
+ * This function for signup
+ * @route post /api/v1/signup
+ * @group user - Operations about user
+ * @param {Singup.model} Singup.body - username or email
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ */
+export const signupWithPhone = async (req: Request, res: Response, next: NextFunction) => {
   await check("phone", "phone is not valid").isMobilePhone('zh-CN').run(req);
-  await check("password", "Password must be at least 8 characters long").isLength({ min: 8 }).run(req);
+  await check("password", "Password must be at least 8 characters long").isLength({ min: 4 }).run(req);
   // check("confirmPassword", "Passwords do not match").equals(req.body.password);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).send(errors.array())
   }
-
-  const newUserAuth = new UserAuth({
-    phone: req.body.phone,
-    password: req.body.password
-  });
-  UserAuth.findOne({ phone: req.body.phone }, (err, existingUser) => {
-    if (err) { return next(err); }
-    if (existingUser) {
-      return res.status(200).send({
-        message: 'user is exists'
-      })
+  let user = await User.findOne({ phone: req.body.phone })
+  if (!user) {
+    const newUser = {
+      phone: req.body.phone,
+      nickname: req.body.nickname
     }
+    user = await User.create(newUser)
+    const newUserAuth = new UserAuth({
+      phone: req.body.phone,
+      password: req.body.password,
+      userId: user.id
+    });
     newUserAuth.save((err): any => {
       if (err) { return next(err); }
       req.logIn(newUserAuth, (err): any => {
         if (err) {
           return next(err);
         }
-        res.json({
-          message: 'success'
-        })
+        res.json(user)
       });
     });
-  });
+  } else {
+    return res.status(200).send({
+      message: 'user is exists'
+    })
+  }
 };
 
 export const postLogin = (req: Request, res: Response, next: NextFunction) => {

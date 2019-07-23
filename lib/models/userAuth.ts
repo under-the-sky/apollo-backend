@@ -6,6 +6,7 @@ export type UserAuthDocument = mongoose.Document & {
   password: string;
   createdAt: Number;
   updateAt: Number;
+  userId: string;
 
   comparePassword: comparePasswordFunction;
 };
@@ -13,19 +14,22 @@ export type UserAuthDocument = mongoose.Document & {
 
 type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
 const userAuthSchema = new Schema({
+  userId: {
+    type: String
+  },
   phone: { type: String, unique: true },
   password: {
     type: String
   },
 }, { timestamps: true });
 userAuthSchema.pre("save", function save(next) {
-  const user = this as UserAuthDocument;
-  if (!user.isModified("password")) { return next(); }
+  const userAuth = this as UserAuthDocument;
+  if (!userAuth.isModified("password")) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err); }
-    bcrypt.hash(user.password, salt, (err: mongoose.Error, hash: string) => {
+    bcrypt.hash(userAuth.password, salt, (err: mongoose.Error, hash: string) => {
       if (err) { return next(err); }
-      user.password = hash;
+      userAuth.password = hash;
       next();
     });
   });

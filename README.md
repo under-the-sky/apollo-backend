@@ -16,7 +16,7 @@ swagger: http://localhost:3000/api-docs/
 ```
 
 
-#### 项目布局
+# 项目布局
 
 ```
 .
@@ -25,7 +25,6 @@ swagger: http://localhost:3000/api-docs/
 │   ├── controller              模型控制，负责处理数据相关
 │   ├── models                  定义模型
 │   ├── routers                 路由
-│   ├── swagger                 swagger实例
 │   ├── app.ts                  基础配置
 │   ├── server.ts               入口文件
 ├── .gitignore
@@ -35,3 +34,9 @@ swagger: http://localhost:3000/api-docs/
 
 ```
 
+#### 相关资源
+swagger用法可以参考 https://github.com/pgroot/express-swagger-generator 
+mongoose https://mongoosejs.com/docs/guide.html
+第三方认证参考 http://www.passportjs.org/
+expressJs官网 https://expressjs.com/
+nodeJs api文档 http://nodejs.cn/api/

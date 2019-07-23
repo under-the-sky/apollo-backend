@@ -7,7 +7,7 @@ import * as session from 'express-session';
 import * as Promise from "bluebird";
 import * as mongo from 'connect-mongo';
 import * as passport from "passport";
-import { Swagger } from './swagger'
+import { options } from './config/config';
 
 const MongoStore = mongo(session);
 
@@ -15,13 +15,13 @@ class App {
 
   public app: express.Application;
   public routePrv: Routes = new Routes();
-  public swagger: Swagger = new Swagger()
   public mongoUrl: string = 'mongodb://localhost/apollo';
   constructor() {
     this.app = express();
     this.config();
     this.routePrv.routes(this.app);
-    this.swagger.createSwagger(this.app);
+    const expressSwagger = require('express-swagger-generator')(this.app);
+    expressSwagger(options)
     this.mongoSetup();
   }
 

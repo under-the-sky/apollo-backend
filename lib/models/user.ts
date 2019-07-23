@@ -6,6 +6,9 @@ const UserSchema = new Schema({
   nickname: {
     type: String
   },
+  phone: {
+    type: Number
+  },
   avator: {
     type: String
   }
