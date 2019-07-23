@@ -7,6 +7,7 @@ import * as session from 'express-session';
 import * as Promise from "bluebird";
 import * as mongo from 'connect-mongo';
 import * as passport from "passport";
+import { Swagger } from './swagger'
 
 const MongoStore = mongo(session);
 
@@ -14,11 +15,13 @@ class App {
 
   public app: express.Application;
   public routePrv: Routes = new Routes();
+  public swagger: Swagger = new Swagger()
   public mongoUrl: string = 'mongodb://localhost/apollo';
   constructor() {
     this.app = express();
     this.config();
     this.routePrv.routes(this.app);
+    this.swagger.createSwagger(this.app);
     this.mongoSetup();
   }
 
@@ -33,7 +36,7 @@ class App {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 1000 * 60 * 3, // 设置 session 的有效时间，单位毫秒
+        maxAge: 1000 * 60 * 3,
       },
       store: new MongoStore({
         url: this.mongoUrl,

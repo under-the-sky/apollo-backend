@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import * as bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcryptjs';
 const Schema = mongoose.Schema;
 export type UserAuthDocument = mongoose.Document & {
   phone: string;
@@ -38,5 +38,3 @@ const comparePassword: comparePasswordFunction = function (candidatePassword, cb
 };
 userAuthSchema.methods.comparePassword = comparePassword;
 export const UserAuth = mongoose.model<UserAuthDocument>('UserAuth', userAuthSchema);
-
-// export const User = mongoose.model<UserDocument>("User", userSchema);

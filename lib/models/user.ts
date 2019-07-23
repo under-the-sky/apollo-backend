@@ -8,15 +8,7 @@ const UserSchema = new Schema({
   },
   avator: {
     type: String
-  },
-  created_date: {
-    type: Date,
-    default: Date.now
-  },
-  update_date: {
-    type: Date,
-    default: Date.now
   }
-});
-const User = mongoose.model('user', UserSchema);
+}, { timestamps: true });
+const User = mongoose.model('User', UserSchema);
 export default User;
