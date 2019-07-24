@@ -4,6 +4,7 @@ import User from '../models/user';
 import { UserAuth } from '../models/userAuth';
 import * as passport from "passport";
 import "../config/passport";
+import { Db } from 'mongodb';
 
 export const createUser = (req: Request, res: Response) => {
   let newUser = new User(req.body);
@@ -19,7 +20,15 @@ export const createUser = (req: Request, res: Response) => {
   });
 }
 
-export const getUserById = (req: Request, res: Response) => {
+/**
+ * This function for user
+ * @route get /api/v1/user/{id}
+ * @group user - Operations about user
+ * @param {intenger} id.path - username or email
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ */
+export const getUserById = (req: Request, res: Response): any => {
   User.findById(req.params.id, (err, user) => {
     if (err) {
       res.status(400).send(err);
@@ -31,7 +40,14 @@ export const getUserById = (req: Request, res: Response) => {
   });
 }
 
-
+/**
+ * This function for all users
+ * @route get /api/v1/users
+ * @group user - Operations about user
+ * @param {string} req.query - username or email
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ */
 export const getAlluser = (req: Request, res: Response) => {
   User.find({}, (err, users) => {
     if (err) {
@@ -57,10 +73,9 @@ export const getAlluser = (req: Request, res: Response) => {
  * @returns {object} 200 - An array of user info
  * @returns {Error}  default - Unexpected error
  */
-export const signupWithPhone = async (req: Request, res: Response, next: NextFunction) => {
+export const signupWithPhone = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   await check("phone", "phone is not valid").isMobilePhone('zh-CN').run(req);
   await check("password", "Password must be at least 8 characters long").isLength({ min: 4 }).run(req);
-  // check("confirmPassword", "Passwords do not match").equals(req.body.password);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -94,25 +109,40 @@ export const signupWithPhone = async (req: Request, res: Response, next: NextFun
   }
 };
 
-export const postLogin = (req: Request, res: Response, next: NextFunction) => {
-  check("email", "Email is not valid").isEmail();
-  check("password", "Password cannot be blank").isLength({ min: 1 });
-  sanitize("email").normalizeEmail({ gmail_remove_dots: false });
+/**
+ * @typedef Login
+ * @property {string} phone
+ * @property {string} password - Some description for point - eg: 1234
+ */
+/**
+ * This function for login
+ * @route post /api/v1/login
+ * @group user - Operations about user
+ * @param {Login.model} Login.body - username or email
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ */
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  await check("phone", "phone is not valid").isMobilePhone('zh-CN').run(req);
+  await check("password", "Password must be at least 8 characters long").isLength({ min: 4 }).run(req);
 
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.redirect("/login");
+    return res.status(400).send(errors.array())
   }
 
   passport.authenticate("local", (err: Error, userAuth) => {
     if (err) { return next(err); }
     if (!userAuth) {
-      return res.redirect("/login");
+      return res.status(200).send({
+        message: 'login error'
+      })
     }
-    req.logIn(userAuth, (err) => {
+    req.logIn(userAuth, async (err) => {
       if (err) { return next(err); }
-      res.redirect(req.session.returnTo || "/");
+      const user = await User.findById(userAuth.userId)
+      res.json(user)
     });
   })(req, res, next);
 };

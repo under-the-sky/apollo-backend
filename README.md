@@ -27,6 +27,7 @@ swagger: http://localhost:3000/api-docs/
 │   ├── routers                 路由
 │   ├── app.ts                  基础配置
 │   ├── server.ts               入口文件
+├── .env
 ├── .gitignore
 ├── package.json
 ├── README.md

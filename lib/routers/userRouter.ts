@@ -5,5 +5,6 @@ router.post('/user', userController.createUser);
 router.get('/user/:id', userController.getUserById);
 router.get('/users', userController.getAlluser);
 router.post('/signup', userController.signupWithPhone);
+router.post('/login', userController.login);
 
 export default router;

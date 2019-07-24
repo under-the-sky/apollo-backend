@@ -7,7 +7,8 @@ import * as session from 'express-session';
 import * as Promise from "bluebird";
 import * as mongo from 'connect-mongo';
 import * as passport from "passport";
-import { options } from './config/config';
+import { options } from './config/swaggerconfig';
+import { MONGODB_URI, SESSION_SECRET } from './config/env_config';
 
 const MongoStore = mongo(session);
 
@@ -15,7 +16,7 @@ class App {
 
   public app: express.Application;
   public routePrv: Routes = new Routes();
-  public mongoUrl: string = 'mongodb://localhost/apollo';
+  public mongoUrl: string = MONGODB_URI;
   constructor() {
     this.app = express();
     this.config();
@@ -32,7 +33,7 @@ class App {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
     this.app.use(session({
-      secret: 'apollo',
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
