@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { check, sanitize, validationResult } from "express-validator";
+import { check, validationResult } from "express-validator";
 import User from '../models/user';
 import { UserAuth } from '../models/userAuth';
 import * as passport from "passport";
-import "../config/passport";
-import { Db } from 'mongodb';
+// import "../config/passport";
 
 export const createUser = (req: Request, res: Response) => {
   let newUser = new User(req.body);
@@ -24,11 +23,12 @@ export const createUser = (req: Request, res: Response) => {
  * This function for user
  * @route get /api/v1/user/{id}
  * @group user - Operations about user
- * @param {intenger} id.path - username or email
+ * @param {intenger} id.path - userId
  * @returns {object} 200 - An array of user info
  * @returns {Error}  default - Unexpected error
  */
 export const getUserById = (req: Request, res: Response): any => {
+  let sess = req.session;
   User.findById(req.params.id, (err, user) => {
     if (err) {
       res.status(400).send(err);
@@ -44,7 +44,7 @@ export const getUserById = (req: Request, res: Response): any => {
  * This function for all users
  * @route get /api/v1/users
  * @group user - Operations about user
- * @param {string} req.query - username or email
+ * @param {string} req.query - filter
  * @returns {object} 200 - An array of user info
  * @returns {Error}  default - Unexpected error
  */
@@ -69,7 +69,7 @@ export const getAlluser = (req: Request, res: Response) => {
  * This function for signup
  * @route post /api/v1/signup
  * @group user - Operations about user
- * @param {Singup.model} Singup.body - username or email
+ * @param {Singup.model} Singup.body - phone and password
  * @returns {object} 200 - An array of user info
  * @returns {Error}  default - Unexpected error
  */
@@ -118,7 +118,7 @@ export const signupWithPhone = async (req: Request, res: Response, next: NextFun
  * This function for login
  * @route post /api/v1/login
  * @group user - Operations about user
- * @param {Login.model} Login.body - username or email
+ * @param {Login.model} Login.body - phone and password
  * @returns {object} 200 - An array of user info
  * @returns {Error}  default - Unexpected error
  */

@@ -9,22 +9,31 @@ passport.serializeUser<any, any>((userAuth, done) => {
 
 passport.deserializeUser((id, done) => {
   UserAuth.findById(id, (err, userAuth) => {
-      done(err, userAuth);
+    done(err, userAuth);
   });
 });
 
 passport.use(new LocalStrategy({ usernameField: "phone" }, (phone, password, done) => {
   UserAuth.findOne({ phone: phone.toLowerCase() }, (err, userAuth: any) => {
+    if (err) { return done(err); }
+    if (!userAuth) {
+      return done(undefined, false, { message: `phone ${phone} not found.` });
+    }
+    userAuth.comparePassword(password, (err: Error, isMatch: boolean) => {
       if (err) { return done(err); }
-      if (!userAuth) {
-          return done(undefined, false, { message: `phone ${phone} not found.` });
+      if (isMatch) {
+        return done(undefined, userAuth);
       }
-      userAuth.comparePassword(password, (err: Error, isMatch: boolean) => {
-          if (err) { return done(err); }
-          if (isMatch) {
-              return done(undefined, userAuth);
-          }
-          return done(undefined, false, { message: "Invalid phone or password." });
-      });
+      return done(undefined, false, { message: "Invalid phone or password." });
+    });
   });
 }));
+
+export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).send({
+    message: 'auth is failure'
+  })
+};
