@@ -41,6 +41,38 @@ export const getUserById = (req: Request, res: Response): any => {
 }
 
 /**
+ * @typedef User
+ * @property {string} nickname
+ * @property {string} avatar
+ */
+/**
+ * This function for user
+ * @route post /api/v1/user/{id}
+ * @group user - Operations about user
+ * @param {intenger} id.path - userId
+ * @param {User.model} User.body - info
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ */
+export const updateUser = (req: Request, res: Response): any => {
+  let sess = req.session;
+  User.findById(req.params.id, (err, user) => {
+    const body = req.body
+    user = Object.assign(user, body)
+    user.save((err, updateUser) => {
+      if (err) {
+        res.status(400).send(err);
+      }
+      res.status(200).send({
+        status: 200,
+        updateUser
+      });
+    })
+  });
+}
+
+
+/**
  * This function for all users
  * @route get /api/v1/users
  * @group user - Operations about user
@@ -127,7 +159,6 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   await check("password", "Password must be at least 8 characters long").isLength({ min: 4 }).run(req);
 
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     return res.status(400).send(errors.array())
   }
@@ -142,7 +173,25 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     req.logIn(userAuth, async (err) => {
       if (err) { return next(err); }
       const user = await User.findById(userAuth.userId)
-      res.json(user)
+      res.status(200).send({
+        user
+      });
     });
   })(req, res, next);
+};
+
+/**
+ * This function for logout
+ * @route get /api/v1/logout
+ * @group user - Operations about user
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ */
+export const logout = (req: Request, res: Response) => {
+  console.log(req.session)
+  req.logout();
+  // res.redirect("/");
+  res.status(200).send({
+    message: 'success'
+  });
 };

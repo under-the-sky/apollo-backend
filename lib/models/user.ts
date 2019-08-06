@@ -9,7 +9,7 @@ const UserSchema = new Schema({
   phone: {
     type: Number
   },
-  avator: {
+  avatar: {
     type: String
   }
 }, { timestamps: true });
