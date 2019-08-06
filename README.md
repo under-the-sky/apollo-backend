@@ -1,10 +1,10 @@
 #### 关于
 该APP为纯后端项目
 
-####技术栈
+#### 技术栈
 nodejs + typescript + express + mongodb + mongoose + es6/7 + swagger + passport 
 
-####运行
+#### 运行
 
 ```
 npm install 
@@ -37,7 +37,11 @@ swagger: http://localhost:3000/api-docs/
 
 #### 相关资源
 swagger用法可以参考 https://github.com/pgroot/express-swagger-generator 
+
 mongoose https://mongoosejs.com/docs/guide.html
+
 第三方认证参考 http://www.passportjs.org/
+
 expressJs官网 https://expressjs.com/
+
 nodeJs api文档 http://nodejs.cn/api/
