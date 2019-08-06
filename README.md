@@ -1,10 +1,10 @@
 #### 关于
 该APP为纯后端项目
 
-####技术栈
+#### 技术栈
 nodejs + typescript + express + mongodb + mongoose + es6/7 + swagger + passport 
 
-####运行
+#### 运行
 
 ```
 npm install 
