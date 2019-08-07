@@ -1,5 +1,6 @@
 import dotenv = require('dotenv');
 import fs = require('fs');
+import { options } from './swaggerconfig';
 
 if (fs.existsSync(".env")) {
     console.debug("Using .env file to supply config environment variables");
@@ -13,7 +14,7 @@ const prod = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
 
 export const SESSION_SECRET = process.env["SESSION_SECRET"];
 export const MONGODB_URI = prod ? process.env["MONGODB_URI"] : process.env["MONGODB_URI_LOCAL"];
-
+export const OPTIONS = prod ? options.swaggerDefinition.host = 'api.tynb0622.com' : options;
 if (!SESSION_SECRET) {
     console.error("No client secret. Set SESSION_SECRET environment variable.");
     process.exit(1);
