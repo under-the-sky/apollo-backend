@@ -19,7 +19,7 @@ wss.on('connection', (ws: WebSocket) => {
 
         //log the received message and send it back to the client
         wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
+            if (ws !== client && client.readyState === WebSocket.OPEN) {
                 const msg = JSON.parse(message);
                 client.send(JSON.stringify(msg));
             }
