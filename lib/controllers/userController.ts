@@ -117,7 +117,8 @@ export const signupWithPhone = async (req: Request, res: Response, next: NextFun
   if (!user) {
     const newUser = {
       phone: req.body.phone,
-      nickname: req.body.nickname
+      nickname: req.body.nickname,
+      avatar: 'https://placeimg.com/140/140/any'
     }
     user = await User.create(newUser)
     const newUserAuth = new UserAuth({
@@ -131,7 +132,7 @@ export const signupWithPhone = async (req: Request, res: Response, next: NextFun
         if (err) {
           return next(err);
         }
-        res.json(user)
+        res.json({ user })
       });
     });
   } else {
